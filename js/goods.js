@@ -554,3 +554,11 @@ var testData = {
       "contents": "консервант: сорбат калия"
     }
   };
+
+// Контейнер сообщения о загрузке данных
+var loadMessageContainer = document.querySelector('.catalog__cards');
+loadMessageContainer.classList.remove('catalog__cards--load');
+// Сообщение загрузки
+var loadMessage = loadMessageContainer.querySelector('.catalog__load');
+loadMessage.classList.add('visually-hidden');
+
