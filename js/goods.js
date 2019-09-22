@@ -539,7 +539,7 @@ var testData = {
     "name": "Бесконечный взрыв",
     "kind": "Зефир",
     "picture": "soda-russian.jpg",
-    "amount": 14,
+    "amount": 0,
     "price": 80,
     "weight": 85,
     "rating": {
@@ -556,9 +556,93 @@ var testData = {
   };
 
 // Контейнер сообщения о загрузке данных
-var loadMessageContainer = document.querySelector('.catalog__cards');
-loadMessageContainer.classList.remove('catalog__cards--load');
+var catalogCardsList = document.querySelector('.catalog__cards');
+catalogCardsList.classList.remove('catalog__cards--load');
 // Сообщение загрузки
-var loadMessage = loadMessageContainer.querySelector('.catalog__load');
+var loadMessage = catalogCardsList.querySelector('.catalog__load');
 loadMessage.classList.add('visually-hidden');
+
+// Шаблон карточки товара
+var cardItemTemplate = document.querySelector('#card').content;
+
+// Получить рейтинг товара
+var getStarRaiting = function (rating) {
+  var starRating;
+
+  switch (rating) {
+    case 1:
+      starRating = 'stars__rating--one';
+      break;
+    case 2:
+      starRating = 'stars__rating--two';
+      break;
+    case 3:
+      starRating = 'stars__rating--three';
+      break;
+    case 4:
+      starRating = 'stars__rating--four';
+      break;
+    case 5:
+      starRating = 'stars__rating--five';
+      break;
+  }
+
+  return starRating;
+};
+
+// Получить класс состояния товара
+var getCardClass = function (amount) {
+  var cardClassName;
+
+  if (amount > 5) {
+    cardClassName = 'card--in-stock';
+  } else if (amount >= 1 && amount <= 5) {
+    cardClassName = 'card--little';
+  } else if (amount === 0) {
+    cardClassName = 'card--soon';
+  }
+
+  return cardClassName;
+};
+
+// Получить сообщение
+var getCharacteristicMessage = function (msg) {
+  var message;
+
+  if (msg) {
+    message = 'Содержит сахар';
+  } else {
+    message = "Без сахара";
+  }
+
+  return message;
+};
+
+// Создать карточку товара
+var createCard = function (card) {
+  var newCardItem = cardItemTemplate.querySelector('.catalog__card').cloneNode(true);
+  newCardItem.querySelector('.card__title').textContent = card.name;
+  newCardItem.querySelector('.card__price').firstChild.textContent = card.price + ' ';
+  newCardItem.querySelector('.card__weight').textContent = '/' + card.weight + 'г';
+  newCardItem.classList.remove('card--in-stock');
+  newCardItem.classList.add(getCardClass(card.amount));
+  newCardItem.querySelector('.stars__rating').classList.remove('stars__rating--five');
+  newCardItem.querySelector('.stars__rating').classList.add(getStarRaiting(card.rating.value));
+  newCardItem.querySelector('.star__count').textContent = '(' + card.rating.number + ')';
+  newCardItem.querySelector('.card__characteristic').textContent = getCharacteristicMessage(card.nutritionFacts.sugar);
+  newCardItem.querySelector('.card__composition-list').textContent = card.nutritionFacts.contents;
+
+  return newCardItem;
+};
+
+// Отрисовать карточки товара
+var renderCards = function (cards) {
+  var cardsContainer = document.createDocumentFragment();
+  for (var i = 0; i <= 8; i++) {
+    cardsContainer.appendChild(createCard(cards[i]));
+  }
+  catalogCardsList.appendChild(cardsContainer);
+};
+
+renderCards(data);
 
