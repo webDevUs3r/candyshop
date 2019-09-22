@@ -621,6 +621,7 @@ var getCharacteristicMessage = function (msg) {
 // Создать карточку товара
 var createCard = function (card) {
   var newCardItem = cardItemTemplate.querySelector('.catalog__card').cloneNode(true);
+  newCardItem.querySelector('.card__img').src = 'img/cards/' + card.picture;
   newCardItem.querySelector('.card__title').textContent = card.name;
   newCardItem.querySelector('.card__price').firstChild.textContent = card.price + ' ';
   newCardItem.querySelector('.card__weight').textContent = '/' + card.weight + 'г';
@@ -646,3 +647,32 @@ var renderCards = function (cards) {
 
 renderCards(data);
 
+// Шаблон товара в корзине
+var cardOrderTemplate = document.querySelector('#card-order').content;
+// Контейнер товаров в корзине
+var cardsOrderList = document.querySelector('.goods__cards');
+cardsOrderList.classList.remove('goods__cards--empty');
+
+// Сообщение в корзине
+var cartEmptyMessage = cardsOrderList.querySelector('.goods__card-empty');
+cartEmptyMessage.classList.add('visually-hidden');
+
+var createCardOrder = function (order) {
+  var newCardOrder = cardOrderTemplate.querySelector('.goods_card').cloneNode(true);
+  newCardOrder.querySelector('.card-order__img').src = 'img/cards/' + order.picture;
+  newCardOrder.querySelector('.card-order__title').textContent = order.name;
+  newCardOrder.querySelector('.card-order__price').firstChild.textContent = order.price + ' Р';
+
+  return newCardOrder;
+};
+
+var renderCardsOrder = function (orders) {
+  var cardsOrderContainer = document.createDocumentFragment();
+
+  for (var i = 0; i < 3; i++) {
+    cardsOrderContainer.appendChild(createCardOrder(orders[i]));
+  }
+  cardsOrderList.appendChild(cardsOrderContainer);
+};
+
+renderCardsOrder(data);
